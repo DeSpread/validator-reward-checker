@@ -84,7 +84,7 @@ validator 주소로 입금된 ERC-20 토큰 전송 트랜잭션 목록을 조회
 - 출금(withdrawal)이 발생한 날은 출금액을 더해 보정
 - Type C의 경우 동일 날짜 tx 중복 집계 방지
 
-### F-03. PostgreSQL 저장
+### F-03. MongoDB 저장
 - 매일 잔고 스냅샷 + 리워드 계산 결과를 DB에 영구 저장
 - 과거 날짜 재처리 지원 (`--date` 플래그)
 
@@ -107,7 +107,7 @@ validator 주소로 입금된 ERC-20 토큰 전송 트랜잭션 목록을 조회
 | 항목 | 요구사항 |
 |---|---|
 | 언어/런타임 | Node.js 20 LTS, TypeScript strict 모드 |
-| DB | PostgreSQL 15+ |
+| DB | MongoDB 7+ |
 | 오류 격리 | 체인별 fetcher 독립 실행 |
 | 재시도 | 최대 3회, exponential backoff |
 | 보안 | 모든 민감 정보 환경 변수 관리 |

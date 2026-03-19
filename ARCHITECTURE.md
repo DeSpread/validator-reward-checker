@@ -59,18 +59,19 @@
 ```typescript
 // src/fetchers/base.fetcher.ts
 
-export interface FetchResult {
-  projectId: number;
-  snapshotDate: string;          // YYYY-MM-DD
-  balance: string;               // 최신 잔고 (문자열로 정밀도 유지)
-  tokenSymbol: string;           // 주 토큰
-  additionalTokens?: {           // Type C: 복수 토큰 수신 시
-    symbol: string;
-    amount: string;
-  }[];
-  rawData: Record<string, unknown>;  // 원본 응답 (embedded document)
+export interface SnapshotData {
+  projectId: string;
+  snapshotDate: string;      // "YYYY-MM-DD"
+  balance?: string;          // Type A/B: 잔고 (planck string)
+  rewardAmount?: string;     // 계산된 리워드 (human 단위 string)
   fetchType: 'A' | 'B' | 'C';
+  rawData?: unknown;         // 체인별 원시 응답 (디버깅용)
 }
+
+// Discriminated union — 호출자가 .ok 체크로 타입 안전하게 분기
+export type FetchResult =
+  | { ok: true; data: SnapshotData }
+  | { ok: false; error: string };
 
 export interface IFetcher {
   readonly projectName: string;
@@ -212,11 +213,15 @@ validator-reward-updater/
 ├── .env.example
 ├── package.json
 ├── tsconfig.json
+├── PRD.md
+├── ARCHITECTURE.md
+├── CLAUDE.md
+├── TASK.md
 └── docs/
-    ├── PRD.md
-    ├── ARCHITECTURE.md
-    ├── CLAUDE.md
-    └── TASK.md
+    ├── 01-plan/
+    ├── 02-design/
+    ├── 03-analysis/
+    └── 04-report/
 ```
 
 ---
@@ -241,7 +246,7 @@ STACKS_API_URL=https://api.mainnet.stacks.co
 STACKS_WALLET_ADDRESS=
 
 # ── Story (Type B) ────────────────────────────
-STORY_REST_URL=https://api.story.foundation
+STORY_RPC_URL=https://api.story.foundation
 STORY_WALLET_ADDRESS=
 
 # ── Hyperliquid (Type B) ──────────────────────

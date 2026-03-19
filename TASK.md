@@ -20,16 +20,23 @@
 
 ---
 
-### 1-2. DB 설정
+### 1-2. DB 설정 ✅ (2026-03-18 완료, Match Rate 100%)
 
-- [ ] `src/db/client.ts` — MongoDB 연결 (`MongoClient`, `MONGO_DB_URI` 환경 변수 사용)
-- [ ] `src/db/seed.ts` 작성
+- [x] `src/db/client.ts` — MongoDB 연결 (`MongoClient`, `MONGO_DB_URI` 환경 변수 사용)
+- [x] `src/db/seed.ts` 작성
   - `validator_projects` 컬렉션 인덱스 없음 (기본 `_id`)
   - `balance_snapshots` unique index: `{ projectId: 1, snapshotDate: 1 }`
   - `token_transfer_snapshots` unique index: `{ projectId: 1, snapshotDate: 1, tokenSymbol: 1 }`
   - `withdrawal_records` index: `{ projectId: 1, withdrawnAt: -1 }`
-- [ ] `npm run db:init` 스크립트 작성 (seed.ts 실행)
-- [ ] `validator_projects` 시드 데이터 삽입 (7개 체인 초기 데이터)
+- [x] `npm run db:init` 스크립트 작성 (seed.ts 실행)
+- [x] `validator_projects` 시드 데이터 삽입 (7개 체인 초기 데이터)
+- [x] `tests/db/client.test.ts`
+  - `vi.mock('mongodb')`로 MongoClient mock
+  - `getDb()` 첫 호출 시 `connect()` 호출 확인
+  - `getDb()` 재호출 시 동일 인스턴스 반환 (싱글톤)
+  - `closeDb()` 후 `close()` 호출 + `_client = null` 초기화
+
+> `seed.ts` 단위 테스트는 MongoDB 없이 의미 있는 작성이 어려우므로 Phase 5 통합 테스트에서 처리.
 
 ---
 
@@ -40,6 +47,18 @@
 - [ ] `src/utils/bignum.ts` — `toHuman(planck, decimals)` 단위 변환 유틸
 - [ ] `src/fetchers/base.fetcher.ts` — `IFetcher` 인터페이스 + `FetchResult` 타입 정의
 - [ ] `src/config/env.ts` — zod로 환경 변수 파싱 + 유효성 검증
+- [ ] `tests/utils/retry.test.ts`
+  - 1회 성공 시 즉시 반환
+  - N회 실패 후 성공 시 정상 반환
+  - maxAttempts 초과 시 마지막 에러 throw
+  - `vi.useFakeTimers()`로 baseDelayMs 간격 검증
+- [ ] `tests/utils/bignum.test.ts`
+  - `toHuman('1000000000000000000', 18)` → `'1'`
+  - `toHuman('1500000000000000000', 18)` → `'1.5'`
+  - 부동소수점 오차 없이 string 반환 검증
+- [ ] `tests/config/env.test.ts`
+  - 필수 환경 변수 누락 시 zod 에러 throw
+  - 유효한 환경 변수 세트로 정상 파싱 확인
 
 ---
 
